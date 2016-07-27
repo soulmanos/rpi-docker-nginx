@@ -5,13 +5,12 @@
 # --link inserts the name of the container to be linked into the container you are about to runs /etc/hosts file
 # you can then ping e.g. ghost-blog-v1 from inside the container and it'll resolve to that containers ip addr
 
-docker run --name soulmanos-nginx \
+docker run --name rpi-docker-nginx \
     -p 80:80 \
     -p 443:443 \
     -v $PWD/sites-enabled:/etc/nginx/sites-enabled \
     -v $PWD/certs:/etc/nginx/certs \
     -v $PWD/log:/var/log/nginx \
     --link node-led:node-led \
-    --link unifi-controller:unifi-controller
-    --name rpi-docker-nginx \
+    --link unifi-controller:unifi-controller \
     soulmanos/rpi-docker-nginx
