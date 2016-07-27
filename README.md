@@ -25,5 +25,5 @@ sudo htpasswd -c $PWD/config/.htpasswd pi
 ### 7) Build the docker image
 docker build -t soulmanos/rpi-docker-nginx .
 
-# 8) Run the image
+### 8) Run the image
 $PWD/start.sh
