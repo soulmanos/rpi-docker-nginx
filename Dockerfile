@@ -15,7 +15,8 @@ COPY config /root
 # Make the certs dir and copy over the custom config files
 RUN mkdir -p /etc/nginx/certs && \
     mv /root/nginx.conf /etc/nginx/nginx.conf && \
-    mv /root/proxy.conf /etc/nginx/proxy.conf
+    mv /root/proxy.conf /etc/nginx/proxy.conf && \
+    mv /root/.htpasswd /etc/nginx/.htpasswd
 
 # Expose the sites-enabled dir for easy access to 'main' 
 # Expose additonal dirs e.g. logs for persistent storage

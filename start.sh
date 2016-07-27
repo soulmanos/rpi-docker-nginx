@@ -6,10 +6,12 @@
 # you can then ping e.g. ghost-blog-v1 from inside the container and it'll resolve to that containers ip addr
 
 docker run --name soulmanos-nginx \
-  -p 80:80 \
-  -p 443:443 \
-  -v $PWD/sites-enabled:/etc/nginx/sites-enabled \
-  -v $PWD/certs:/etc/nginx/certs \
-  -v $PWD/log:/var/log/nginx \
-  --link ghost-blog-v1:ghost-blog-v1 \
-  soulmanos/nginx
+    -p 80:80 \
+    -p 443:443 \
+    -v $PWD/sites-enabled:/etc/nginx/sites-enabled \
+    -v $PWD/certs:/etc/nginx/certs \
+    -v $PWD/log:/var/log/nginx \
+    --link node-led:node-led \
+    --link unifi-controller:unifi-controller
+    --name rpi-docker-nginx \
+    soulmanos/rpi-docker-nginx
