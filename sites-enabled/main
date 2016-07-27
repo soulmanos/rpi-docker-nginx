@@ -1,0 +1,85 @@
+access_log off;
+add_header Cache-Control public;
+server_tokens off;
+
+
+# HTTP 80
+server {
+ listen         80;
+ server_name _;
+ rewrite ^ https://192.168.0.2$request_uri? permanent;
+}
+
+# HTTPS 443
+server  {
+
+ include    /etc/nginx/proxy.conf;
+
+ listen 443 ssl;
+ keepalive_timeout 70;
+
+ server_name 192.168.0.2;
+
+ # SSL config
+ ssl on;
+ ssl_certificate /etc/ssl/localcerts/autosigned.crt;
+ ssl_certificate_key /etc/ssl/localcerts/autosigned.key;
+
+ ssl_session_timeout 5m;
+ ssl_protocols SSLv3 TLSv1.2;
+ ssl_ciphers RC4:HIGH:!aNULL:!MD5;
+ ssl_prefer_server_ciphers on;
+ ssl_session_cache shared:SSL:10m;
+
+ add_header X-Frame-Options DENY;
+
+ # DDOS protection - Tune Values or deactivate in case of issue
+ # limit_conn conn_limit_per_ip 20;
+ # limit_req zone=req_limit_per_ip burst=20 nodelay;
+
+ # status for ngxin auditing
+ location /nginx-status {
+      stub_status on;
+      access_log off;
+      allow 127.0.0.1;
+      deny all;
+  }
+
+ location / {
+	try_files $uri @nodejs;
+ }
+ location /shellinabox/ {
+  	proxy_pass http://localhost:4200;
+        auth_basic            "Access Restricted";
+        auth_basic_user_file  "/etc/nginx/.htpasswd";
+        access_log /var/log/nginx/shellinabox.access.log;
+        error_log /var/log/nginx/shellinabox.error.log; 
+ }
+ location /picam/ {
+	proxy_pass http://192.168.0.26:80/;
+        auth_basic            "Access Restricted";
+        auth_basic_user_file  "/etc/nginx/.htpasswd";
+        access_log /var/log/nginx/picam.access.log;
+        error_log /var/log/nginx/picam.error.log;
+ }
+ location /router/ {
+        proxy_pass http://192.168.0.1:80/;
+        auth_basic            "Access Restricted";
+        auth_basic_user_file  "/etc/nginx/.htpasswd";
+	proxy_set_header Connection keep-alive;
+        access_log /var/log/nginx/router.access.log;
+        error_log /var/log/nginx/router.error.log;
+ }
+ location @nodejs {
+  	proxy_pass http://localhost:8079;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        auth_basic            "Access Restricted";
+        auth_basic_user_file  "/etc/nginx/.htpasswd";
+        access_log /var/log/nginx/nodejs.access.log;
+        error_log /var/log/nginx/nodejs.error.log;
+ }
+}

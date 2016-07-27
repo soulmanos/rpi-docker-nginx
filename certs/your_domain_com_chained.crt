@@ -1,0 +1,12 @@
+-----BEGIN CERTIFICATE-----
+<key data> content from your_domain_com.crt 
+-----END CERTIFICATE----- 
+-----BEGIN CERTIFICATE----- 
+<key data> content from COMODORSADomainValidationSecureServerCA.crt 
+-----END CERTIFICATE----- 
+-----BEGIN CERTIFICATE----- 
+<key data> content from COMODORSAAddTrustCA.crt 
+-----END CERTIFICATE----- 
+-----BEGIN CERTIFICATE----- 
+<key data> content from AddTrustExternalCARoot.crt 
+-----END CERTIFICATE-----
